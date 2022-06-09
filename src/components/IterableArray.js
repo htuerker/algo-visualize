@@ -3,7 +3,6 @@ import "./IterableArray.css";
 import React from "react";
 
 const IterableArray = ({ elements, highlights }) => {
-  console.log(highlights)
   return (
     <div className="array-container">
       {elements.map((element, idx) => (

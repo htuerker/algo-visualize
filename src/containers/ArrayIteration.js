@@ -22,23 +22,31 @@ const useHightlightArray = ({ initialArray = [], initialHighligts = {} }) => {
     [array]
   );
 
-  const addHighlight = useCallback(
-    (index, color = "green") => {
-      const newHash = { ...highlights};
+  const addHighlight = useCallback((index, color) => {
+    setHighligts((prevState) => {
+      const newHash = { ...prevState };
       newHash[`${index}`] = color;
-      setHighligts(newHash);
-    },
-    [highlights]
-  );
+      return newHash;
+    });
+  }, []);
 
-  const removeHighlight = useCallback(
-    (index) => {
-      const newHash = {...highlights}
+  const removeHighlight = useCallback((index) => {
+    setHighligts((prevState) => {
+      const newHash = { ...prevState };
       newHash[`${index}`] = null;
-      setHighligts(newHash);
-    },
-    [highlights]
-  );
+      return newHash;
+    });
+  }, []);
+
+  const swapValues = useCallback((idx1, idx2) => {
+    setArray((prevState) => {
+      const newArray = [...prevState];
+      const temp = newArray[idx2];
+      newArray[idx2] = newArray[idx1];
+      newArray[idx1] = temp;
+      return newArray;
+    });
+  }, []);
 
   return {
     array,
@@ -48,6 +56,7 @@ const useHightlightArray = ({ initialArray = [], initialHighligts = {} }) => {
       removeElement,
       addHighlight,
       removeHighlight,
+      swapValues,
     },
   };
 };
@@ -56,15 +65,38 @@ const simpleArrayIteration = async ({
   array,
   addHighlight,
   removeHighlight,
+  reverse = false,
+  color = "green",
 }) => {
-  for (let i = 0; i < array.length; i++) {
-    addHighlight(i);
-    await wait(1000);
-    removeHighlight(i);
+  if (reverse) {
+    for (let i = array.length - 1; i >= 0; i--) {
+      addHighlight(i, color);
+      await wait(1000);
+      removeHighlight(i);
+    }
+  } else {
+    for (let i = 0; i < array.length; i++) {
+      addHighlight(i, color);
+      await wait(1000);
+      removeHighlight(i);
+    }
   }
 };
 
-const ArrayIteration = () => {
+const swapValues = async (event, methods) => {
+  event.preventDefault();
+  methods.addHighlight(0, "blue");
+  methods.addHighlight(1, "red");
+  await wait(1000);
+  methods.swapValues(0, 1);
+  methods.addHighlight(0, "red");
+  methods.addHighlight(1, "blue");
+  await wait(1000);
+  methods.removeHighlight(0);
+  methods.removeHighlight(1);
+};
+
+const ArrayIteration = ({ reverse, color }) => {
   const { array, highlights, methods } = useHightlightArray({
     initialArray: [1, 2, 3, 4, 5],
   });
@@ -77,11 +109,14 @@ const ArrayIteration = () => {
             array,
             addHighlight: methods.addHighlight,
             removeHighlight: methods.removeHighlight,
+            reverse: reverse,
+            color: color,
           })
         }
       >
         Run
       </button>
+      <button onClick={(event) => swapValues(event, methods)}>Swap 0-1</button>
       <IterableArray elements={array} highlights={highlights} />
     </div>
   );
