@@ -1,0 +1,21 @@
+.array-container {
+  display: flex;
+  justify-content: center;
+}
+
+.array-element {
+  display: block;
+  position: relative;
+  padding: 10px 20px;
+  border: 1px solid white;
+}
+
+.array-element > .caption {
+  position: absolute;
+  bottom: -30px;
+  font-size: 1rem;
+}
+
+.highlighted {
+  background-color: green;
+}
