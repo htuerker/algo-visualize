@@ -28,7 +28,7 @@ const swapValues = async (event, methods) => {
   addHighlight(0, "blue");
   addHighlight(1, "red");
   await wait(1000);
-  swapValues(0, 1);
+  methods.swapValues(0, 1);
   addHighlight(0, "red");
   addHighlight(1, "blue");
   await wait(1000);
