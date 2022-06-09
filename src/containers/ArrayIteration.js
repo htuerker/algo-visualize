@@ -1,33 +1,88 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import IterableArray from "../components/IterableArray";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const simpleArrayIteration = async (container, dispatch, speed = 1000) => {
-  for (let i = 0; i < container.elements.length; i++) {
-    dispatch({
-      ...container,
-      options: { highlight: i },
-    });
-    await wait(speed);
+// highligts: [{ index: Number, color: String }]
+const useHightlightArray = ({ initialArray = [], initialHighligts = {} }) => {
+  const [array, setArray] = useState(initialArray);
+  const [highlights, setHighligts] = useState(initialHighligts);
+
+  const addElement = useCallback(
+    (element) => {
+      setArray([...array, element]);
+    },
+    [array]
+  );
+
+  const removeElement = useCallback(
+    (index) => {
+      setArray(array.filter((_, idx) => idx === index));
+    },
+    [array]
+  );
+
+  const addHighlight = useCallback(
+    (index, color = "green") => {
+      const newHash = { ...highlights};
+      newHash[`${index}`] = color;
+      setHighligts(newHash);
+    },
+    [highlights]
+  );
+
+  const removeHighlight = useCallback(
+    (index) => {
+      const newHash = {...highlights}
+      newHash[`${index}`] = null;
+      setHighligts(newHash);
+    },
+    [highlights]
+  );
+
+  return {
+    array,
+    highlights,
+    methods: {
+      addElement,
+      removeElement,
+      addHighlight,
+      removeHighlight,
+    },
+  };
+};
+
+const simpleArrayIteration = async ({
+  array,
+  addHighlight,
+  removeHighlight,
+}) => {
+  for (let i = 0; i < array.length; i++) {
+    addHighlight(i);
+    await wait(1000);
+    removeHighlight(i);
   }
 };
 
-const ArrayIteration = ({ array = [] }) => {
-  const [container, setContainer] = useState({
-    options: {},
-    elements: array,
+const ArrayIteration = () => {
+  const { array, highlights, methods } = useHightlightArray({
+    initialArray: [1, 2, 3, 4, 5],
   });
+
   return (
     <div>
-      <header>Simple Array Iteration</header>
-      <button onClick={() => simpleArrayIteration(container, setContainer)}>
+      <button
+        onClick={() =>
+          simpleArrayIteration({
+            array,
+            addHighlight: methods.addHighlight,
+            removeHighlight: methods.removeHighlight,
+          })
+        }
+      >
         Run
       </button>
-      <IterableArray
-        elements={container.elements}
-        highlight={container.options.highlight}
-      />{" "}
+      <IterableArray elements={array} highlights={highlights} />
     </div>
   );
 };

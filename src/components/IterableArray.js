@@ -2,13 +2,15 @@ import "./IterableArray.css";
 
 import React from "react";
 
-const IterableArray = ({ elements, highlight }) => {
+const IterableArray = ({ elements, highlights }) => {
+  console.log(highlights)
   return (
     <div className="array-container">
       {elements.map((element, idx) => (
         <div
-          key={element.element}
-          className={`array-element ${highlight === idx ? "highlighted" : ""}`}
+          key={idx}
+          className="array-element"
+          style={{ backgroundColor: highlights[idx] }}
         >
           {element}
           <div className="caption">{idx}</div>
