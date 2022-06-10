@@ -1,7 +1,7 @@
 import React from "react";
 import IterableArray from "../components/IterableArray";
 import useHightlightArray from "../state/hooks/useHighlightArray";
-import { simpleArrayIteration, swapValues, bubbleSort } from "../utils";
+import { simpleArrayIteration, bubbleSort } from "../utils";
 
 const ArraysContainer = () => {
   const { array, highlights, methods } = useHightlightArray({

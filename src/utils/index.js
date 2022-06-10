@@ -36,13 +36,6 @@ const swapValues = async ({ index1, index2, methods, color1, color2 }) => {
   removeHighlight(index2);
 };
 
-const bubbleSortDefaults = {
-  iColor: "green",
-  jColor: "orange",
-  swap1Color: "red",
-  swap2Color: "blue",
-};
-
 const localSwap = (array, idx1, idx2) => {
   let temp = array[idx1];
   array[idx1] = array[idx2];
