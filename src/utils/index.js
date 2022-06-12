@@ -77,14 +77,7 @@ const mergeSort = async ({
   end = array.length - 1,
   options,
 }) => {
-  const {
-    speed,
-    compareFunction,
-    tempElement,
-    setTempElement,
-    setDisplayText,
-    increaseStep,
-  } = options;
+  const { speed, setDisplayText, increaseStep } = options;
 
   const { addHighlight, removeHighlight } = methods;
   let mid;
@@ -151,7 +144,7 @@ const merge = async ({ array, start, mid, end, methods, options }) => {
   console.log(options);
   const { speed, setDisplayText, setTempElement, increaseStep, increaseSwap } =
     options;
-  const { addHighlight, removeHighlight } = methods;
+  const { addHighlight } = methods;
 
   let p1 = start;
   let p2 = mid + 1;

@@ -45,7 +45,7 @@ const useHighlightArray = ({ initialArray = [], initialHighlights = {} }) => {
 
   const clearHighlights = useCallback(() => {
     setHighligts({});
-  });
+  }, []);
 
   const swapValues = useCallback((idx1, idx2) => {
     setArray((prevState) => {
