@@ -1,9 +1,17 @@
 import { useCallback, useState } from "react";
 
 // highlights: [{ index: Number, color: String }]
-const useHightlightArray = ({ initialArray = [], initialHighligts = {} }) => {
+const useHighlightArray = ({ initialArray = [], initialHighlights = {} }) => {
   const [array, setArray] = useState(initialArray);
-  const [highlights, setHighligts] = useState(initialHighligts);
+  const [highlights, setHighligts] = useState(initialHighlights);
+
+  const setElement = useCallback((index, value) => {
+    setArray((prevState) => {
+      const newArray = [...prevState];
+      newArray[index] = value;
+      return newArray;
+    });
+  }, []);
 
   const addElement = useCallback(
     (element) => {
@@ -35,6 +43,10 @@ const useHightlightArray = ({ initialArray = [], initialHighligts = {} }) => {
     });
   }, []);
 
+  const clearHighlights = useCallback(() => {
+    setHighligts({});
+  });
+
   const swapValues = useCallback((idx1, idx2) => {
     setArray((prevState) => {
       const newArray = [...prevState];
@@ -49,13 +61,15 @@ const useHightlightArray = ({ initialArray = [], initialHighligts = {} }) => {
     array,
     highlights,
     methods: {
+      setElement,
       addElement,
       removeElement,
       addHighlight,
       removeHighlight,
+      clearHighlights,
       swapValues,
     },
   };
 };
 
-export default useHightlightArray;
+export default useHighlightArray;

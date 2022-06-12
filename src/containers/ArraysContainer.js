@@ -1,30 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import IterableArray from "../components/IterableArray";
-import useHightlightArray from "../state/hooks/useHighlightArray";
-import { simpleArrayIteration, bubbleSort } from "../utils";
+import useHighlightArray from "../state/hooks/useHighlightArray";
+import { simpleArrayIteration, bubbleSort, mergeSort } from "../utils";
 
 const ArraysContainer = () => {
-  const { array, highlights, methods } = useHightlightArray({
-    initialArray: [5, 4, 3, 2, 1],
+  const { array, highlights, methods } = useHighlightArray({
+    initialArray: [6, 5, 12, 10, 9, 1],
   });
-
-  const [speed, setSpeed] = React.useState(100);
+  const [displayText, setDisplayText] = useState("");
+  const [tempElement, setTempElement] = useState(null);
+  const [swapCount, setSwapCount] = useState(0);
+  const [stepCount, setStepCount] = useState(0);
+  const increaseStep = () => setStepCount((prevState) => prevState + 1);
+  const increaseSwap = () => setSwapCount((prevState) => prevState + 1);
+  const [speed, setSpeed] = useState(100);
 
   const handleBubbleSort = (event) => {
     event.preventDefault();
+    setSwapCount(0);
+    setStepCount(0);
     const options = {
       speed,
+      increaseSwap: () => {
+        setSwapCount((prevState) => prevState + 1);
+      },
+      increaseStep: () => {
+        setStepCount((prevState) => prevState + 1);
+      },
     };
+
     bubbleSort({ array, methods, ...options });
+    console.log("hello");
   };
 
   const handleBubbleSortReverse = (event) => {
     event.preventDefault();
+    setSwapCount(0);
+    setStepCount(0);
     const options = {
       speed,
       compareFunction: (a, b) => a < b,
+      increaseSwap,
+      increaseStep,
     };
     bubbleSort({ array, methods, ...options });
+  };
+
+  const handleMergeSort = (event) => {
+    setDisplayText("Merge Sort Started");
+    event.preventDefault();
+    const options = {
+      speed,
+      tempElement,
+      setTempElement,
+      setDisplayText,
+      increaseStep,
+      increaseSwap,
+    };
+    mergeSort({ array: [...array], methods, options });
   };
 
   const handleForwardIteration = (event) => {
@@ -59,12 +92,14 @@ const ArraysContainer = () => {
       flexDirection: "column",
     },
     button: {
+      margin: "auto",
+      width: 300,
       padding: 10,
     },
   };
 
   return (
-    <>
+    <div>
       <div style={styles.container}>
         <button style={styles.button} onClick={handleForwardIteration}>
           Forward Iteration
@@ -82,7 +117,10 @@ const ArraysContainer = () => {
         >
           Bubble Sort Reverse
         </button>
-        <label style={styles.button} htmlFor="input-speed">
+        <button style={styles.button} onClick={handleMergeSort} type="submit">
+          Merge Sort
+        </button>
+        <label style={{ padding: 10 }} htmlFor="input-speed">
           Speed: {speed}ms
           <input
             onChange={handleSpeedChange}
@@ -92,9 +130,13 @@ const ArraysContainer = () => {
             max="2000"
           />
         </label>
+        <IterableArray elements={array} highlights={highlights} />
+        <div>
+          Swap: {swapCount} &nbsp; Step: {stepCount} &nbsp; Temp: {tempElement}
+        </div>
+        <div>{displayText}</div>
       </div>
-      <IterableArray elements={array} highlights={highlights} />
-    </>
+    </div>
   );
 };
 
